@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1>Info about composer</h1>
+    <h2 th:text="${composer.name}"></h2>
+    <h2 th:text="${composer.birthDate}"></h2>
+</div>
+<div>
+    <h2>Alums</h2>
+    <ul th:each="composer : ${composer.albums}">
+        <li th:text="${composer}"></li>
+    </ul>
+</div>
+</body>
+</html>

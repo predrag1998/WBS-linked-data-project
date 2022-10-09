@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1>Info about movie</h1>
+    <h2 th:text="${movie.composer}"></h2>
+    <a th:href="@{/home/composer/{composerNameUrl}(composerNameUrl=${movie.composerNameFromUrl})}">Show info about composer</a>
+</div>
+<div>
+    <h2>Actors in this movie:</h2>
+    <ul th:each="actor : ${movie.actors}">
+        <li th:text="${actor}"></li>
+    </ul>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Page</title>
+</head>
+<body>
+<h1>Actor infomation page</h1>
+<h2 th:text="${name}"></h2>
+<h2 th:text="${surname}"></h2>
+
+<h1>Abstract</h1>
+<h2 th:text="${actor.getActorAbstract()}"></h2>
+
+
+<th:block>
+    <h1>Birth name</h1>
+    <h2 th:text="${actor.getName()}"></h2>
+</th:block>
+<table>
+    <thead>
+    <tr>
+        <th> Movie Title </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${actor.getMovies()}">
+        <td colspan="2"> No Books Available </td>
+    </tr>
+    <tr th:each="movie : ${actor.getMovies()}">
+        <td><span th:text="${movie}"> </span></td>
+        <td>
+        <a th:href="@{/home/{movieUrl}(movieUrl=${movie})}">Show movie</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
