@@ -48,6 +48,7 @@ public class DataServiceImpl  implements DataService{
     public Movie getMovieInfo(String movieUrl) {
         Resource resourceMovie=model.getResource(movieUrl);
 
+
         Property mAbstract=model.getProperty("http://dbpedia.org/ontology/abstract");
         Property director=model.getProperty("http://dbpedia.org/ontology/director");
         Property composer=model.getProperty("http://dbpedia.org/ontology/musicComposer");
