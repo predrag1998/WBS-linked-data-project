@@ -5,9 +5,11 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ public class DataServiceImpl  implements DataService{
     public Actor getActorInfo() {
         Property mAbstract=model.getProperty("http://dbpedia.org/ontology/abstract");
         Property birthName=model.getProperty("http://dbpedia.org/ontology/birthName");
+        Property birthDate=model.getProperty("http://dbpedia.org/ontology/birthDate");
+        Property thumbnail=model.getProperty("http://dbpedia.org/ontology/thumbnail");
         String actorAbstract;
         if(resourceActor.getProperty(mAbstract)!=null)
             actorAbstract= resourceActor.getProperty(mAbstract).getObject().toString();
@@ -40,18 +44,32 @@ public class DataServiceImpl  implements DataService{
         if(resourceActor.getProperty(birthName)!=null)
              name= resourceActor.getProperty(birthName).getObject().toString();
         else name="Not Available actor birth name";
+        String date;
+        if(resourceActor.getProperty(birthDate)!=null)
+            date= resourceActor.getProperty(birthDate).getObject().toString();
+        else date="Not Available actor birth date";
+        String image;
+        if(resourceActor.getProperty(thumbnail)!=null)
+            image = resourceActor.getProperty(thumbnail).getObject().toString();
+        else image="Not Available actor image";
         List<String> movies=this.getMoviesNames();
-        return new Actor(actorAbstract,name,movies);
+        return new Actor(actorAbstract,name,date,image,movies);
     }
 
     @Override
-    public Movie getMovieInfo(String movieUrl) {
+    public Movie getMovieInfo(String movieUrl,String movie) throws IOException {
+
         Resource resourceMovie=model.getResource(movieUrl);
+        readFromCsv.addMovieProperties(movie,resourceMovie);
 
 
         Property mAbstract=model.getProperty("http://dbpedia.org/ontology/abstract");
         Property director=model.getProperty("http://dbpedia.org/ontology/director");
         Property composer=model.getProperty("http://dbpedia.org/ontology/musicComposer");
+        Property thumbnail=model.getProperty("http://dbpedia.org/ontology/thumbnail");
+        Property movieName=model.getProperty("http://dbpedia.org/property/name");
+        Property movieGenre=model.getProperty("http://dbpedia.org/ontology/genre");
+        Property MovieImdbUrl=model.getProperty("http://schema.org/URL");
         String movieAbstract;
         if(resourceMovie.getProperty(mAbstract)!=null)
             movieAbstract= resourceMovie.getProperty(mAbstract).getObject().toString();
@@ -68,18 +86,35 @@ public class DataServiceImpl  implements DataService{
         }
         else composerUrl="Not Available movie composer";
 
+        String image;
+        if(resourceMovie.getProperty(thumbnail)!=null)
+            image = resourceMovie.getProperty(thumbnail).getObject().toString();
+        else image="Not Available movie image";
+
+        String name;
+        if(resourceMovie.getProperty(movieName)!=null) {
+            int len=resourceMovie.getProperty(movieName).getObject().toString().length();
+            name = resourceMovie.getProperty(movieName).getObject().toString().substring(0,len-3);
+        }
+        else name="Not Available movie name";
+
+        String genre;
+        if(resourceMovie.getProperty(movieGenre)!=null)
+            genre = resourceMovie.getProperty(movieGenre).getObject().toString();
+        else genre="Not Available movieGenre";
+
+        String imdbUrl;
+        if(resourceMovie.getProperty(MovieImdbUrl)!=null)
+            imdbUrl = resourceMovie.getProperty(MovieImdbUrl).getObject().toString();
+        else imdbUrl="Not Available movieGenre";
+
+
         List<String> actors=this.getActorNames(resourceMovie);
 
-        return new Movie(movieAbstract,composerUrl,directorName,actors);
-
-//        + "?movie dbo:musicComposer ?composer."
-//                + "?movie dbo:abstract ?abstract."
-//                + "?movie dbo:director ?director."
-//                + "?movie dbo:starring ?actors."
-//                + "?movie dbo:thumbnail ?thumbnail."
+        return new Movie(movieAbstract,name,image,composerUrl,directorName,genre,actors,imdbUrl);
     }
 
-    public Composer getComposerInfo(String composerUrl) { //TODO:implement movieUrl
+    public Composer getComposerInfo(String composerUrl) {
         Resource composerLink = model.getResource(composerUrl);
 
         Property sameAs = model.getProperty("http://www.w3.org/2002/07/owl#sameAs");
@@ -90,9 +125,7 @@ public class DataServiceImpl  implements DataService{
                         return s.getObject().toString().startsWith("http://musicbrainz.org/artist/");
                     }
                 }).nextStatement().getResource();
-
         return composerMusicBrainzInfo(musicBrainzLink.toString());
-
     }
 
     public Composer composerMusicBrainzInfo(String musicBrainzSameAsLink) {
@@ -102,11 +135,10 @@ public class DataServiceImpl  implements DataService{
         String composerBirthDate = model.listStatements(new SimpleSelector(model.getResource(musicBrainzSameAsLink), model.getProperty("http://schema.org/birthDate"), (Object) null))
                 .next().getObject().toString();
         List<String> albums=new ArrayList<>();
-        model.listStatements(new SimpleSelector(null, model.getProperty("http://schema.org/name"), (Object) null))
-                .forEachRemaining(current -> {
-                    String albumName = current.getLiteral().toString();
-                    albums.add(albumName);
-                });
+
+        model.listResourcesWithProperty(model.getProperty("http://schema.org/byArtist")).forEach(
+                k-> albums.add(k.getProperty(model.getProperty("http://schema.org/name")).getObject().toString()));
+
         return new Composer(composerName,composerBirthDate,albums);
     }
 
@@ -145,6 +177,7 @@ public class DataServiceImpl  implements DataService{
                 + "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
                 + "prefix dbr: <http://dbpedia.org/resource/>"
                 + "prefix dbo: <http://dbpedia.org/ontology/>"
+                + "prefix dbp: <http://dbpedia.org/property/>"
                 + "prefix owl: <http://www.w3.org/2002/07/owl#>"
                 + "CONSTRUCT "
                 + "WHERE {"
@@ -154,6 +187,7 @@ public class DataServiceImpl  implements DataService{
                 + "?movie dbo:director ?director."
                 + "?movie dbo:starring ?actors."
                 + "?movie dbo:thumbnail ?thumbnail."
+                + "?movie dbp:name ?name."
                 + "?composer owl:sameAs ?mB ."
 //                + """filter(regex(?mB ,"http://musicbrainz.org*","i" ))"""
 //                + "filter(regex(?mB,\"http://musicbrainz.org.artist*\",\"i\"))"

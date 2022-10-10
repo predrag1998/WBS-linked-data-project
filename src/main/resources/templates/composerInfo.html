@@ -6,9 +6,8 @@
 </head>
 <body>
 <div>
-    <h1>Info about composer</h1>
-    <h2 th:text="${composer.name}"></h2>
-    <h2 th:text="${composer.birthDate}"></h2>
+    <h1 th:text="${'Composer: '+composer.name}"></h1>
+    <h2 th:text="${'Birth date: '+composer.birthDate}"></h2>
 </div>
 <div>
     <h2>Alums</h2>
