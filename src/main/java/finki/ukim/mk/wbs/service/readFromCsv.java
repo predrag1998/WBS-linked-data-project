@@ -9,7 +9,7 @@ import java.io.*;
 public class readFromCsv {
     public static String searchCsvLine(String searchString) throws IOException {
         String resultRow = null;
-//           BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\velic\\Desktop\\testcsv\\src\\final2.csv"));
+      // BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\velic\\Desktop\\testcsv\\src\\final2.csv"));
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File("C:\\Fakultet__________JAVA\\WBS_project\\final2.csv"))));
         String line;
         while ( (line = br.readLine()) != null ) {
@@ -23,7 +23,11 @@ public class readFromCsv {
         return resultRow;
     }
     public static void addMovieProperties(String movieName, Resource resourceMovie) throws IOException {
-        String []rez=searchCsvLine(movieName).split(",");
+       String movie = searchCsvLine(movieName);
+       if(movie==null)
+           return;
+
+        String []rez=movie.split(",");
         resourceMovie.addProperty(new PropertyImpl("http://dbpedia.org/ontology/genre"),rez[8]);
         resourceMovie.addProperty(new PropertyImpl("http://schema.org/URL"),"https://www.imdb.com/title/"+rez[0]);
 

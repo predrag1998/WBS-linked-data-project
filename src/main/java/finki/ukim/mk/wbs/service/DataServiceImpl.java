@@ -41,8 +41,10 @@ public class DataServiceImpl  implements DataService{
             actorAbstract= resourceActor.getProperty(mAbstract).getObject().toString();
         else actorAbstract="Not available actor abstract";
         String name;
-        if(resourceActor.getProperty(birthName)!=null)
-             name= resourceActor.getProperty(birthName).getObject().toString();
+        if(resourceActor.getProperty(birthName)!=null) {
+            int strlen = resourceActor.getProperty(birthName).getObject().toString().length()-3;
+            name = resourceActor.getProperty(birthName).getObject().toString().substring(0,strlen);
+        }
         else name="Not Available actor birth name";
         String date;
         if(resourceActor.getProperty(birthDate)!=null)
@@ -89,7 +91,7 @@ public class DataServiceImpl  implements DataService{
         String image;
         if(resourceMovie.getProperty(thumbnail)!=null)
             image = resourceMovie.getProperty(thumbnail).getObject().toString();
-        else image="Not Available movie image";
+        else image="https://img.freepik.com/premium-vector/clapper-film-movie-icon-design_24877-23150.jpg";
 
         String name;
         if(resourceMovie.getProperty(movieName)!=null) {
@@ -133,7 +135,7 @@ public class DataServiceImpl  implements DataService{
         String composerName = model.listStatements(new SimpleSelector(model.getResource(musicBrainzSameAsLink), model.getProperty("http://schema.org/name"), (Object) null))
                 .next().getObject().toString();
         String composerBirthDate = model.listStatements(new SimpleSelector(model.getResource(musicBrainzSameAsLink), model.getProperty("http://schema.org/birthDate"), (Object) null))
-                .next().getObject().toString();
+                .next().getObject().toString().substring(0,10);
         List<String> albums=new ArrayList<>();
 
         model.listResourcesWithProperty(model.getProperty("http://schema.org/byArtist")).forEach(

@@ -5,15 +5,18 @@
     <title>Title</title>
 </head>
 <body>
+<div class="container">
+    <div class="row">
+        <div class="m-auto w-50">
 <div>
     <h1 th:text="${'Composer: '+composer.name}"></h1>
-    <h2 th:text="${'Birth date: '+composer.birthDate}"></h2>
+    <h4 th:text="${'Birth date: '+composer.birthDate}"></h4>
 </div>
 <div>
-    <h2>Alums</h2>
-    <ul th:each="composer : ${composer.albums}">
-        <li th:text="${composer}"></li>
+    <h4>Albums</h4>
+    <ul class="list-group">
+        <li class="list-group-item" th:each="composer : ${composer.albums}"th:text="${composer}"></li>
     </ul>
-</div>
+</div></div></div></div>
 </body>
 </html>

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Locale;
 
 
 @Controller
@@ -29,9 +30,12 @@ public class HomeController {
                                Model model){
         model.addAttribute("name",name);
         model.addAttribute("surname",surname);
-
-        dataService.makeModel("http://dbpedia.org/resource/Tom_Cruise");
-//        dataService.makeModel("http://dbpedia.org/resource/"+name+"_"+surname);
+        if(name == ""){
+           dataService.makeModel("http://dbpedia.org/resource/Tom_Cruise");}
+        else{String nameCorrect = name.substring(0,1).toUpperCase() + name.substring(1);
+        String surnameCorrect = surname.substring(0,1).toUpperCase() + surname.substring(1);
+       // System.out.println(nameCorrect+" "+surnameCorrect);
+        dataService.makeModel("http://dbpedia.org/resource/"+nameCorrect+"_"+surnameCorrect);}
 //        dataService.printModel();
         model.addAttribute("actor",dataService.getActorInfo());
 

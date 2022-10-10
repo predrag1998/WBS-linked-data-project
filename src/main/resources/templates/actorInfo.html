@@ -5,37 +5,47 @@
     <title>Page</title>
 </head>
 <body>
+<div class="container">
+    <div class="row">
+        <h1 th:text="${'Info about '+actor.getName()}"></h1></div>
+    <div class="row my-3">
+        <div class="col-xs-3">
+            <h2 th:text="${surname}"></h2>
+            <img th:src="${actor.getImage()}">
+        </div>
+        <div class="col-8">
+            <h1>Abstract</h1>
+            <h6 th:text="${actor.getActorAbstract()}"></h6></div>
+    </div>
 
-    <h1 th:text="${'Info about '+actor.getName()}"></h1>
+    <th:block>
 
-<h2 th:text="${surname}"></h2>
-<img th:src="${actor.getImage()}">
+        <h2 th:text="${'Birth name: '+actor.getName()}"></h2>
+    </th:block>
+    </br>
+    <div class="container">
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="h2"> Movie Title </th>
+        </tr>
+        </thead>
+        <tbody>
 
-<h1>Abstract</h1>
-<h2 th:text="${actor.getActorAbstract()}"></h2>
 
 
-<th:block>
-    <h1>Birth name</h1>
-    <h2 th:text="${actor.getName()}"></h2>
-</th:block>
-<table>
-    <thead>
-    <tr>
-        <th> Movie Title </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${actor.getMovies()}">
-        <td colspan="2"> No Books Available </td>
-    </tr>
-    <tr th:each="movie : ${actor.getMovies()}">
-        <td><span th:text="${movie}"> </span></td>
-        <td>
-        <a th:href="@{/home/{movieUrl}(movieUrl=${movie})}">Show movie</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        <tr class="m-1" th:each="movie : ${actor.getMovies()}">
+            <td><span class="h4" th:text="${movie}"> </span></td>
+            <td>
+            <a  class="btn btn-primary" th:href="@{/home/{movieUrl}(movieUrl=${movie})}">Show movie <i class="bi bi-box-arrow-up-right"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+</div>
 </body>
 </html>

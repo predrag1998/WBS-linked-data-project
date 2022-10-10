@@ -6,21 +6,38 @@
 </head>
 <body>
 <div>
-    <h1 th:text="${'Info about movie: '+movie.name}"></h1>
-    <h1 th:text="${'Director: '+movie.directorNameFromUrl}"></h1>
-    <h2 th:text="${movie.movieAbstract}"></h2>
-    <h2 th:text="${'Composer: '+movie.composerNameFromUrl}"></h2>
-    <a th:href="@{/home/composer/{composerNameUrl}(composerNameUrl=${movie.composerNameFromUrl})}">Show info about composer</a>
-    <img th:src="${movie.image}">
-    <h2 th:text="${'Genre: '+movie.genre}"></h2>
-    <a th:href="${movie.imdbUrl}" target="_blank">Go to imdb</a>
+    <div class="container">
+        <h1 class="text-center" th:text="${'Info about movie: '+movie.name}"></h1>
+        <div class="row">
+            <div class="col-3">
+                <img th:src="${movie.image}" alt="">
 
+            </div>
+            <div class="col-8">
+                <p th:text="${movie.movieAbstract}"></p>
+            </div>
+        </div>
+    <div class="w-50 m-auto">
+   <div>    <h4 th:text="${'Composer: '+movie.composerNameFromUrl}"></h4> <a class="ml-2 btn btn-primary"
+                                                                                          th:href="@{/home/composer/{composerNameUrl}(composerNameUrl=${movie.composerNameFromUrl})}">Show
+            info about composer</a></div>
+
+
+    <!--    <a th:href="@{/home/composer/{composerNameUrl}(composerNameUrl=${movie.composerNameFromUrl})}">Show info about composer</a>-->
+
+     <div>   <h5 th:text="${'Genre: '+movie.genre}"></h5>
+        <a th:href="${movie.imdbUrl}"  class="btn ml-2 btn-warning" target="_blank">Go to imdb</a>
+    </div>
+
+
+    <div>
+        <div class="col-xs-12 m-auto"><h2>Actors in this movie:</h2>
+        </br>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="actor : ${movie.actors}" th:text="${actor}"></li>
+        </ul>
+    </div></div></div>
 </div>
-<div>
-    <h2>Actors in this movie:</h2>
-    <ul th:each="actor : ${movie.actors}">
-        <li th:text="${actor}"></li>
-    </ul>
 </div>
 
 
