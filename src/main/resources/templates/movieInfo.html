@@ -6,9 +6,15 @@
 </head>
 <body>
 <div>
-    <h1>Info about movie</h1>
-    <h2 th:text="${movie.composer}"></h2>
+    <h1 th:text="${'Info about movie: '+movie.name}"></h1>
+    <h1 th:text="${'Director: '+movie.directorNameFromUrl}"></h1>
+    <h2 th:text="${movie.movieAbstract}"></h2>
+    <h2 th:text="${'Composer: '+movie.composerNameFromUrl}"></h2>
     <a th:href="@{/home/composer/{composerNameUrl}(composerNameUrl=${movie.composerNameFromUrl})}">Show info about composer</a>
+    <img th:src="${movie.image}">
+    <h2 th:text="${'Genre: '+movie.genre}"></h2>
+    <a th:href="${movie.imdbUrl}" target="_blank">Go to imdb</a>
+
 </div>
 <div>
     <h2>Actors in this movie:</h2>

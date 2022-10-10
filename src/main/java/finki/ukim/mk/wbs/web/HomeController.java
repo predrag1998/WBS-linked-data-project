@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 @Controller
 @RequestMapping("/home")
@@ -16,8 +18,10 @@ public class HomeController {
     }
 
     @GetMapping
-    public String getHomePage(){
-        return "home";
+    public String getHomePage(Model model){
+
+        model.addAttribute("bodyContent","home");
+        return "master-template";
     }
     @PostMapping
     public String getActorPage(@RequestParam String name,
@@ -31,14 +35,16 @@ public class HomeController {
 //        dataService.printModel();
         model.addAttribute("actor",dataService.getActorInfo());
 
-        return "actorInfo";
+        model.addAttribute("bodyContent","actorInfo");
+        return "master-template";
     }
     @GetMapping("/{movie}")
     public String getMoviePage(@PathVariable String movie,
-                           Model model){
+                           Model model) throws IOException {
         String movieUrl = "http://dbpedia.org/resource/"+movie.replace(" ","_");
-        model.addAttribute("movie",dataService.getMovieInfo(movieUrl));
-        return "movieInfo";
+        model.addAttribute("movie",dataService.getMovieInfo(movieUrl,movie));
+        model.addAttribute("bodyContent","movieInfo");
+        return "master-template";
     }//TODO: show top 10 movies with same genre [button]
 
     @GetMapping("/composer/{composer}")
@@ -47,6 +53,7 @@ public class HomeController {
 
         String composerUrl = "http://dbpedia.org/resource/"+composer.replace(" ","_");
         model.addAttribute("composer",dataService.getComposerInfo(composerUrl));
-        return "composerInfo";
+        model.addAttribute("bodyContent","composerInfo");
+        return "master-template";
     }
 }

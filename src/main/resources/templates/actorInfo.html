@@ -5,9 +5,11 @@
     <title>Page</title>
 </head>
 <body>
-<h1>Actor infomation page</h1>
-<h2 th:text="${name}"></h2>
+
+    <h1 th:text="${'Info about '+actor.getName()}"></h1>
+
 <h2 th:text="${surname}"></h2>
+<img th:src="${actor.getImage()}">
 
 <h1>Abstract</h1>
 <h2 th:text="${actor.getActorAbstract()}"></h2>
