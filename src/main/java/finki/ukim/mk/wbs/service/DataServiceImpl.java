@@ -38,7 +38,7 @@ public class DataServiceImpl  implements DataService{
         Property thumbnail=model.getProperty("http://dbpedia.org/ontology/thumbnail");
         String actorAbstract;
         if(resourceActor.getProperty(mAbstract)!=null)
-            actorAbstract= resourceActor.getProperty(mAbstract).getObject().toString();
+            actorAbstract= resourceActor.getProperty(mAbstract,"en").getObject().toString();
         else actorAbstract="Not available actor abstract";
         String name;
         if(resourceActor.getProperty(birthName)!=null) {
@@ -74,7 +74,7 @@ public class DataServiceImpl  implements DataService{
         Property MovieImdbUrl=model.getProperty("http://schema.org/URL");
         String movieAbstract;
         if(resourceMovie.getProperty(mAbstract)!=null)
-            movieAbstract= resourceMovie.getProperty(mAbstract).getObject().toString();
+            movieAbstract= resourceMovie.getProperty(mAbstract,"en").getObject().toString();
         else movieAbstract="Not available movie abstract";
 
         String directorName;
